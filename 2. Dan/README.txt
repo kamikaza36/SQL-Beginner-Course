@@ -1,1 +1,1 @@
-Ovo je drugi dan JavaScript tutoriala.
+Ovo je ptrecirvi dan SQL tutoriala.
