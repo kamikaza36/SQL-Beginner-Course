@@ -1,0 +1,1 @@
+Ovo je prvi dan JavaScript tutoriala.
