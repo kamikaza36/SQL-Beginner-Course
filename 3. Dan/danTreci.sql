@@ -1,204 +1,135 @@
+--Rjesavanje zadace
+DROP TABLE studenti;
+
+CREATE TABLE studenti (
+    oib NUMBER (11) PRIMARY KEY,
+    ime VARCHAR (20),
+    prezime VARCHAR (20) NOT NULL,
+    predmet VARCHAR (20)
+);
+
+INSERT INTO studenti VALUES (27385516822, 'Marina', 'Anic', 'Matematika');
+INSERT INTO studenti VALUES (27167771763, 'Natalia', 'Dragin', 'Matematika');
+INSERT INTO studenti VALUES (71679977581, 'Marin', 'Janes', 'Fizika');
+INSERT INTO studenti VALUES (50614043124, 'Ivan', 'Mizerak', 'Kemija');
+INSERT INTO studenti VALUES (19639758834, 'Ante', 'Mamic', 'Matematika');
+
+ALTER TABLE studenti ADD(
+    datum_rodenja DATE,
+    prosjek_ocjena NUMBER (3,2)
+);
+
+INSERT INTO studenti VALUES (67293839941, 'Ivan', 'Anic', 'Matematika', DATE '1997-09-17', 3.27);
+INSERT INTO studenti VALUES (67295654427, 'Stjepan', 'Kozic', 'Matematika', DATE '1995-09-19', 2.59);
+
+SELECT * FROM studenti
+WHERE predmet = 'Matematika'
+AND prosjek_ocjena > 3;
+
+
+SELECT * FROM studenti
+WHERE prezime LIKE '%ic';
+--Nedovrsena zadaca
+INSERT INTO studenti VALUES (67293839941, 'Ivan', 'Anic', 'Matematika', DATE '1997-09-17', 3.27);
+INSERT INTO studenti VALUES (67295654427, 'Stjepan', 'Kozic', 'Matematika', DATE '1991-09-19', 2.59);
+
+ALTER TABLE studenti ADD(
+    godine NUMBER (3)
+);
+--Ovdje svima studentima kojima datum rodenja nije prazan racunamo godine tako da
+--sadasnju godinu oduzimamo od izvucene godine iz datuma rodenja.
+UPDATE studenti 
+SET 
+    godine = 2020 - (EXTRACT(YEAR FROM datum_rodenja)) 
+WHERE 
+    datum_rodenja IS NOT NULL;
+--Ovdje stavljamo vrijednost predmeta Apsolventi svim studentima starijim od 25 godina.
+--U našem slucaju je samo jedan
+UPDATE studenti SET predmet = 'Apsolventi' WHERE godine > 25;
+
+SELECT * FROM studenti;
+--Kraj zadace
+CREATE TABLE profesori (
+    profesor_id NUMBER (2) PRIMARY KEY,
+    ime VARCHAR (20),
+    prezime VARCHAR (20),
+    predmet VARCHAR (20)
+);
+
+INSERT INTO profesori VALUES (1, 'Miro', 'Mamic', 'Matematika');
+INSERT INTO profesori VALUES (2, 'Ana', 'Anic', 'Matematika');
+INSERT INTO profesori VALUES (3, 'Matej', 'Pokos', 'Fizika');
+
+--Union nam omogućuje da spojimo poglede dvije tablice
 /*
-    Dario je dobio 3 racuna 3 razlicita restorana. Racunu si iznosli: 224kn, 40kn, 720kn
-    Napraviti kalkulator koji ce pomoci Dariju izracunati koliku ce napojnicu ostaviti
-    na slijedeci nacin:
-    Kada je racun manji od 60 kn napojnica od 20%
-    Kada je racun izmedu 60 kn 300 kn napojnica od 15%
-    Kada je racun veci od 300 kn napojnica od 10%
-    Na kraju Dario želi imati niz koji sadrži sve tri napojnice i želi imati ukupni iznos
-    svakog racuna sa napojnicom u drugom nizu
+SELECT tablica1.kolona1, tablica1.kolona2, tablica1.kolona3,,
+FROM tablica1
+WHERE uvjet
+UNION
+SELECT tablica2.kolona1, tablica2.kolona2, tablica2.kolona3,,
+FROM tablica2
+WHERE uvjet;
 */
 
-function kalkulatorNapojnica(racun) {
-    var postotak;
-    if (racun < 60) {
-        postotak = .2;
-    } else if (racun >= 60 && racun < 300) {
-        postotak = .15;
-    } else {
-        postotak = .1;
-    }
-    return postotak * racun;
-};
+SELECT oib AS id, prezime, predmet FROM studenti
+UNION
+SELECT profesor_id, prezime, predmet FROM profesori;
 
-var racun = [224, 40, 720];
-var napojnice = [
-    kalkulatorNapojnica(racun[0]),
-    kalkulatorNapojnica(racun[1]),
-    kalkulatorNapojnica(racun[2])
-];
 
-var ukupniTrosak = [
-    racun[0] + napojnice[0],
-    racun[1] + napojnice[1],
-    racun[2] + napojnice[2],
-];
-//OBJEKTI
-/* 
-objekte mozemo zamisliti kao neke kontenjere u koje spremamo vrijednosti
-te vrijednosti u objektima mozemo imenovati, u nizu ne mozemo imenovati
-objekti mogu sadrzavata svojstva i metode
-*/
-//deklaracija objekta
-var imeVarijable = {
-    //sadrzaj objekta
-};
-
-var auto = {
-    marka : "Skoda",
-    boja : "Plava",
-    godinaProizvodnje : 2016,
-    kilometraza : 45000
-};
-
-//kada deklariramo objekt : nam zamjenjuje =
-//vrijednosti pozivamo na slijedeći način
-console.log(auto.marka);
-console.log(auto.kilometraza);
-
-//metode
+--JOIN!!! Omogućuje nam da spajamo dvije ili više tablica skupa
 /*
-metode su akcije koje provodimo nad objektima
-metode spremamo u objekt kao funkcije
+SELECT ime_kolona
+FROM ime_tablice1
+INNER JOIN ime_tablice2
+ON ime_tablice1.ime_kolone = ime_tablice2.ime_kolone;
 */
 
-var osoba = {
-    ime : "Ivan",
-    prezime : "Horvat",
-    godine : 32,
-    punoIme : function () {
-        return this.ime + " " + this.prezime;
-    }
-};
-
-console.log(osoba.punoIme());
-
-/*
-this nam sluzi kako bi se referirali na vrijednost vlasnika funkcije
-u ovom slucaju referiramo se na nas objekt
-*/
-
-//PETLJE I ITERACIJE
-/* 
-petlje nam sluze kako bi smanjili ponavljanje koda
-problem je kod petlji ako se vrte beskonacno mnogo, rusi nam server
-*/
-//primjer
-for ([pocetnoStanje]; [uvjet]; [akcijaNakonKrugaPetlje]){
-   izjava
-};
+--Los primjer dizajna baze i dizajna primarnog i stranog kljuca
+--U ovom slucaju vise profesora predaje jedan predmet te ispada da svaki ucenik slusa vise profesora
+SELECT 
+    studenti.oib,
+    studenti.ime AS studenti_ime,
+    studenti.prezime AS studenti_prezime,
+    profesori.ime AS profesori_ime,
+    profesori.prezime AS profesori_prezime
+FROM profesori
+INNER JOIN studenti
+ON studenti.predmet = profesori.predmet;
 
 
-let str = "";
+--Dobar primjer Joina
+DROP TABLE dobavljaci;
 
-//u ovom slucaju prolazimo kroz petlju i svaki put kad prodemo dodamo broj u string
-for (let i = 0; i < 9; i++) {
-  str = str + i;
-}
+CREATE TABLE dobavljaci (
+    id_dobavljaca NUMBER (2) PRIMARY KEY,
+    ime_dobavljaca VARCHAR (20)
+);
 
-console.log(str);
+INSERT INTO dobavljaci VALUES (1, 'HP');
+INSERT INTO dobavljaci VALUES (2, 'IBM');
+INSERT INTO dobavljaci VALUES (3, 'Apple');
 
-//ZADATAK
+CREATE TABLE laptopi (
+    id_laptopa NUMBER (2) PRIMARY KEY,
+    ime_laptopa VARCHAR (20),
+    id_dobavljaca NUMBER (2)
+);
 
-
-/*Racunjanje napojnica nastavak
-Ovaj put Dario je išo u 5 različitih restorana racuni su bili: 124, 48, 468, 340, 42.
-Kada je racun manji od 60 kn napojnica od 20%
-Kada je racun izmedu 60 kn 300 kn napojnica od 15%
-Kada je racun veci od 300 kn napojnica od 10%
-1.Kreiraj kalkulator napojnica koristeći objekte i petlje
-2. Dodaj metodu koja izracunava napojnicu
-3. Ta metoda treba ukljucivati petlju koja ce proci po svim racunima i izracunati napojnicu
-4. Kao output trebamo vratiti, 1) kreirati novi niz koji sadrži sve napojnice i 2) niz koji sadrzi ukupni trosak. 
-
-U drugom  slucaju imamo kuma Ivan i on ima drugacija pravila davanja napojnica. Racuni su bili: 77, 375, 110, 45.
-Ivan voli davati napojnice na sljedeći nacin:
-Kada je racun manji od 100 kn napojnica od 20%
-Kada je racun izmedu 100 kn 300 kn napojnica od 10%
-Kada je racun veci od 300 kn napojnica od 25%
-
-5. Implementiraj iste funkcionalnosti kao prije ali koristeci Ivanova pravila
-6. Kreiraj funkciju (ne metodu) koja izracunava prosjecnu napojnicu iz niza napojnica.
-7. Kalkuliraj prosjecnu napojnicu za Daria i Ivana
-8. U konzolu ispisi ko je dao vecu napojnicu
-*/
+INSERT INTO laptopi VALUES (1, 'Mac Book Pro', 3);
+INSERT INTO laptopi VALUES (2, 'Mac Book ProX', 3);
+INSERT INTO laptopi VALUES (3, 'Elite Book 1', 1);
 
 
-var dario = {
-    ime : "Dario",
-    racuni : [124, 48, 468, 340, 42],
-    kalkulatorNapojnica: function () {
-        this.napojnice = [];
-        this.ukupniTrosak = [];
+SELECT id_laptopa, ime_laptopa, ime_dobavljaca, laptopi.id_dobavljaca FROM laptopi
+INNER JOIN dobavljaci
+ON dobavljaci.id_dobavljaca = laptopi.id_dobavljaca;
 
-        for (var i = 0; i < this.racuni.length; i++) {
-            var postotak;
-            var racun = this.racuni[i];
+ INTO laptopi VALUES (4, 'Elite Book 21', 4);
 
-            if (racun < 60) {
-                postotak = .2;
-            } else if (racun >= 60 && racun < 300) {
-                 postotak = .15;
-            } else {
-                 postotak = .1;
-            }
-                
-            this.napojnice[i] = racun * postotak;
-            this.ukupniTrosak[i] = racun + racun * postotak;
-            
-        
-        }
-    }
-};
+--Left outer join nam omogucuje da spojimo sve iz lijeve tablice sa zajednickim iz desne
+SELECT id_laptopa, ime_laptopa, ime_dobavljaca, laptopi.id_dobavljaca FROM laptopi
+LEFT OUTER JOIN dobavljaci
+ON dobavljaci.id_dobavljaca = laptopi.id_dobavljaca;
 
-dario.kalkulatorNapojnica();
-console.log(dario);
-
-var ivan = {
-    ime: "Ivan",
-    racuni : [77, 375, 110, 45],
-    kalkulatorNapojnica: function () {
-        this.napojnice = [];
-        this.ukupniTrosak = [];
-
-        for (var i = 0; i < this.racuni.length; i++) {
-            var postotak;
-            var racun = this.racuni[i];
-
-            if (racun < 100) {
-                postotak = .2;
-            } else if (racun >= 100 && racun < 300) {
-                postotak = .1;
-            } else {
-                postotak = .25;
-            }
-            this.napojnice[i] = racun * postotak;
-            this.ukupniTrosak[i] = racun + racun * postotak;
-        }
-    }
-};
-
-ivan.kalkulatorNapojnica();
-console.log(ivan);
-
-function kalkulatorProsjek(napojnice) {
-    var zbroj = 0;
-    for (var i = 0; i < napojnice.length; i++) {
-        zbroj = zbroj + napojnice[i];
-    }
-    return zbroj / napojnice.length;
-}
-
-ivan.prosjek = kalkulatorProsjek(ivan.napojnice);
-dario.prosjek = kalkulatorProsjek(dario.napojnice);
-
-
-function vecaPotrosnja (potrosnjaJedan, potrosnjaDva) {
-    if (potrosnjaJedan.ukupniTrosak > potrosnjaDva.ukupniTrosak) {
-        console.log("Vecu trosak je imao " + potrosnjaJedan.ime);
-    } else if (potrosnjaJedan.ukupniTrosak < potrosnjaDva.ukupniTrosak) {
-        console.log("Vecu trosak je imao " + potrosnjaDva.ime);
-    } else {
-        console.log("Potrosnja " + potrosnjaJedan.ime + " i " + potrosnjaDva.ime + " je jednaka.");
-    }
-}; 
+ALTER TABLE studenti ADD (godine NUMBER (3));
+--Za kraj nedovrsena zadaca
