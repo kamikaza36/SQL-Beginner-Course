@@ -1,4 +1,6 @@
 Ovo je drugi dan SQL tutoriala.
+Za pregled drugog dana otvorite datoteku danDrugi.sql
+
 Linkovi za ucenje:
 Ogranicenja u bazi: https://www.w3schools.com/sql/sql_constraints.asp
 Like: https://www.techonthenet.com/oracle/like.php

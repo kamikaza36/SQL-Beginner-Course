@@ -1,4 +1,5 @@
 Ovo je prvi dan SQL tutoriala.
+Za pregled dana otvorite datoteku danPrvi.sql
 
 Linkovi za ucenje:
 Što je relacijska baza podataka: https://www.oracle.com/database/what-is-a-relational-database/
